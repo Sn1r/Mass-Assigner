@@ -47,56 +47,63 @@ def handle_json_response(response, url, method, headers):
         
 
 def modify_and_send_request(url, method, headers, response_data, args):
-
     ignored_params = set(args.ignore_params.split(',') if args.ignore_params else set())
-    modification_successful = False
 
-    for key, value in response_data.items():
+    def modify_data_recursive(data, key_prefix="", modification_successful=False):
+        for key, value in data.items():
+            full_key = f"{key_prefix}.{key}" if key_prefix else key
 
-        if key in ignored_params:
-            print(f"{YELLOW}[i] The '{key}' parameter is ignored and won't be modified.{RESET}\n")
-            continue
+            if isinstance(value, dict):
+                modification_successful = modify_data_recursive(value, key_prefix=full_key, modification_successful=modification_successful)
+            else:
+                if full_key in ignored_params:
+                    print(f"{YELLOW}[i] The '{full_key}' parameter is ignored and won't be modified.{RESET}\n")
+                    continue
 
-        modified_data = {}
-        if isinstance(value, bool):
-            modified_data[key] = not value
-        elif isinstance(value, int):
-            modified_data[key] = value + 1
-        elif isinstance(value, str):
-            modified_data[key] = value + "_modified"
-        else:
-            continue
-        
-        if args.proxy:
-            response = requests.request(method, url, headers=headers, json=modified_data, proxies={"http": args.proxy, "https": args.proxy}, verify=False)
+                modified_data = {}
+                if isinstance(value, bool):
+                    modified_data[key] = not value
+                elif isinstance(value, int):
+                    modified_data[key] = value + 1
+                elif isinstance(value, str):
+                    modified_data[key] = value + "_modified"
+                else:
+                    continue
+                
+                if args.proxy:
+                    response = requests.request(method, url, headers=headers, json=modified_data, proxies={"http": args.proxy, "https": args.proxy}, verify=False)
 
-        response = requests.request(method, url, headers=headers, json=modified_data)
+                response = requests.request(method, url, headers=headers, json=modified_data)
 
-        if args.rate_limit:
-            time.sleep(1 / float(args.rate_limit))
+                if args.rate_limit:
+                    time.sleep(1 / float(args.rate_limit))
 
-        status_code = response.status_code
+                status_code = response.status_code
 
-        if status_code in (200, 201, 202):
-            modification_successful = True
-            status_color = GREEN
-        elif status_code in (401, 403, 404, 405, 500, 501, 502, 503, 504, 505):
-            status_color = RED
-        elif status_code in (301, 302):
-            status_color = YELLOW
-        else:
-            status_color = RESET
+                if status_code in (200, 201, 202):
+                    modification_successful = True
+                    status_color = GREEN
+                elif status_code in (401, 403, 404, 405, 500, 501, 502, 503, 504, 505):
+                    status_color = RED
+                elif status_code in (301, 302):
+                    status_color = YELLOW
+                else:
+                    status_color = RESET
 
-        print(f"{YELLOW}[i] Attempting to modify the '{key}' key:{RESET}")
-        print(f"[+] Status Code: {status_color}{status_code}{RESET}")
-        print(f"[+] Response Body: \n{response.text}\n")
+                print(f"{YELLOW}[i] Attempting to modify the '{full_key}' key:{RESET}")
+                print(f"[+] Status Code: {status_color}{status_code}{RESET}")
+                print(f"[+] Response Body: \n{response.text}\n")
 
-        if not modification_successful:
-            print(f"{RED}[-] Modification attempt failed.\n{RESET}")
-            continue
-        
+                if not modification_successful:
+                    print(f"{RED}[-] Modification attempt failed.\n{RESET}")
+                    continue
+                
+        return modification_successful 
+
+    modification_successful = modify_data_recursive(response_data)
     if modification_successful:
         print(f"{GREEN}[+] All modification attempts completed.{RESET}")
+
 
 def invoke_web_request(url, args, method, headers=None):
     headers_dict = parse_headers(headers)
