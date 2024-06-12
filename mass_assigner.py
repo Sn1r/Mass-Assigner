@@ -54,10 +54,11 @@ def modify_and_send_request(url, method, headers, response_data, args):
             for key, value in data.items():
                 full_key = f"{key_prefix}.{key}" if key_prefix else key
 
+                if any(full_key == param for param in ignored_params):
+                    print(f"{RED}[i] The '{full_key}' parameter is ignored and won't be modified.{RESET}\n")
+                    continue
+
                 if isinstance(value, (dict, list)):
-                    if full_key in ignored_params:
-                        print(f"{YELLOW}[i] The '{full_key}' parameter is ignored and won't be modified.{RESET}\n")
-                        continue
                     
                     if args.proxy:
                         response = requests.request(method, url, headers=headers, json={key: value}, proxies={"http": args.proxy, "https": args.proxy}, verify=False)
