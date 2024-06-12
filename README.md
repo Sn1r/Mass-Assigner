@@ -52,5 +52,6 @@ Forbidden Buster accepts the following arguments:
 
 Example Usage:
 ```bash
-python3 mass_assigner.py --fetch-from "http://example.com/api/v1/me" --target-req "http://example.com/api/v1/me" --header "Authorization: Bearer XXX" --proxy "http://proxy.example.com"
+python3 mass_assigner.py --fetch-from "http://example.com/api/v1/me" --target-req "http://example.com/api/v1/me" --header "Authorization: Bearer XXX" --proxy "http://proxy.example.com" --data '{\"param1\": \"test\", \"param2\":true}'
+
 ```
