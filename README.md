@@ -9,8 +9,9 @@ Mass Assigner is a powerful tool designed to identify and exploit mass assignmen
 - Supports rate-limiting to manage request thresholds effectively
 - Provides the option to specify "ignored parameters" which the tool will ignore during execution
 
-### 🔮 In the Future 
+### 🔮 What's Next 
 - Support additional content types, such as "application/x-www-form-urlencoded"
+- Improving the support in nested arrays/objects inside JSON data in responses
   
 ## Installation & Usage
 Install requirements
@@ -38,6 +39,7 @@ Forbidden Buster accepts the following arguments:
                         Add a custom header. Format: 'Key: Value'
   -p PROXY, --proxy PROXY
                         Use Proxy, Usage i.e: http://127.0.0.1:8080.
+  -d DATA, --data DATA  Add data to the request body. JSON is supported with escaping.
   --rate-limit RATE_LIMIT
                         Number of requests per second
   --first-method FIRST_METHOD
