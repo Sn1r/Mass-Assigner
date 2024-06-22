@@ -1,6 +1,9 @@
 # Mass Assigner
 
-Mass Assigner is a powerful tool designed to identify and exploit mass assignment vulnerabilities in web applications. It achieves this by first retrieving data from a specified request, such as fetching user profile data. Then, it systematically attempts to apply each parameter extracted from the response to a second request provided, one parameter at a time. This approach allows for the automated testing and exploitation of potential mass assignment vulnerabilities. **This code is made for security enthusiasts and professionals only. Use it at your own risk.**
+Mass Assigner is a powerful tool designed to identify and exploit mass assignment vulnerabilities in web applications. It achieves this by first retrieving data from a specified request, such as fetching user profile data. Then, it systematically attempts to apply each parameter extracted from the response to a second request provided, one parameter at a time. This approach allows for the automated testing and exploitation of potential mass assignment vulnerabilities.
+
+## ⚠️ Disclaimer
+**This tool actively modifies server-side data. Please ensure you have proper authorization before use. Any unauthorized or illegal activity using this tool is entirely at your own risk.**
 
 ## 🪄 Features
 
@@ -8,10 +11,10 @@ Mass Assigner is a powerful tool designed to identify and exploit mass assignmen
 - Offers customization of various HTTP methods for both origin and target requests
 - Supports rate-limiting to manage request thresholds effectively
 - Provides the option to specify "ignored parameters" which the tool will ignore during execution
+- Improved the support in nested arrays/objects inside JSON data in responses
 
 ### 🔮 What's Next 
 - Support additional content types, such as "application/x-www-form-urlencoded"
-- Improving the support in nested arrays/objects inside JSON data in responses
   
 ## Installation & Usage
 Install requirements
@@ -23,7 +26,7 @@ pip3 install -r requirements.txt
 Run the script
 
 ```bash
-python3 mass_assigner.py --fetch-from "http://example.com/path-to-fetch-data" --target-req "http://example.com/path-to-probe"
+python3 mass_assigner.py --fetch-from "http://example.com/path-to-fetch-data" --target-req "http://example.com/path-to-probe-the-data"
 ```
 
 ## Arguments
@@ -42,9 +45,9 @@ Forbidden Buster accepts the following arguments:
   -d DATA, --data DATA  Add data to the request body. JSON is supported with escaping.
   --rate-limit RATE_LIMIT
                         Number of requests per second
-  --first-method FIRST_METHOD
+  --source-method SOURCE_METHOD
                         HTTP method for the initial request. Default is GET.
-  --second-method SECOND_METHOD
+  --target-method TARGET_METHOD
                         HTTP method for the modified request. Default is PUT.
   --ignore-params IGNORE_PARAMS
                         Parameters to ignore during modification, separated by comma.
